@@ -4,10 +4,604 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>SKY Electrical - Invoice Builder</title>
+  <style>
+    :root{
+      --bg:#fafafa;
+      --card:#ffffff;
+      --text:#111;
+      --muted:#555;
+      --border:#e7e7e7;
+      --brand:#0b4aa2;  /* close to your logo blue */
+      --accent:#f3c21b; /* close to your logo yellow */
+    }
+    *{ box-sizing:border-box; }
+    body { font-family: Arial, Helvetica, sans-serif; margin: 24px; background: var(--bg); color:var(--text); }
+    .wrap { max-width: 1150px; margin: 0 auto; }
+    .topbar{
+      display:flex; gap:14px; align-items:center; justify-content:space-between;
+      margin-bottom: 12px;
+    }
+    .brand{
+      display:flex; gap:12px; align-items:center;
+    }
+    .logo{
+      width:56px; height:56px; border-radius: 12px; overflow:hidden;
+      border:1px solid var(--border); background:#fff; flex:0 0 auto;
+    }
+    .logo img{ width:100%; height:100%; object-fit:cover; display:block; }
+    h1 { margin: 0; font-size: 22px; letter-spacing: .2px; }
+    .muted { color:var(--muted); margin: 2px 0 0; font-size: 13px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin: 12px 0; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .row { display:flex; gap:12px; flex-wrap: wrap; align-items: end; }
+    label { font-size: 12px; color:#444; display:block; margin-bottom: 6px; }
+    input, select, button, textarea { font-size: 14px; }
+    input, select, textarea { padding: 10px 10px; border:1px solid #ddd; border-radius: 10px; background:#fff; }
+    input[type="number"]{ width: 140px; }
+    select { min-width: 420px; }
+    button { padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; background:#111; color:#fff; cursor:pointer; }
+    button.secondary { background:#fff; color:#111; }
+    button.danger { background:#b00020; border-color:#b00020; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #eee; padding: 10px 8px; text-align: left; vertical-align: middle; }
+    th { font-size: 12px; color:#444; }
+    td.right, th.right { text-align:right; }
+    .pill { display:inline-block; padding:4px 10px; border-radius: 999px; background:#f2f2f2; font-size:12px; color:#333; }
+    .totalBox { display:flex; justify-content: flex-end; gap:18px; align-items: baseline; flex-wrap: wrap; }
+    .totalBox .big { font-size: 22px; font-weight: 700; }
+    .notice { font-size: 12px; color:#666; margin-top:10px; }
+    textarea { width: 100%; min-height: 170px; }
+    .footerBtns { display:flex; gap:10px; flex-wrap: wrap; }
+    .small { font-size: 12px; color:#666; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .split { flex: 1 1 280px; min-width: 260px; }
+    .mini { width: 120px; }
+    .toggle{
+      display:flex; align-items:center; gap:8px; padding: 10px 10px;
+      border:1px solid #ddd; border-radius:10px; background:#fff;
+    }
+    .toggle input{ width:18px; height:18px; }
+    .tag{
+      display:inline-block; padding:3px 8px; border-radius:999px; background: #f0f6ff; color:#163b7a; font-size: 12px;
+      border: 1px solid #dbe9ff;
+    }
+    hr.sep{ border:none;border-top:1px solid #eee;margin:14px 0; }
+  </style>
 </head>
+
 <body>
-  <h1>SKY Electrical Invoice Builder</h1>
-  <p>Your full invoice system file goes here.</p>
-  <p>Replace this with the full code I already gave you.</p>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">
+        <img alt="SKY Electrical Logo" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHBwgHBgoICAkJCgkLDhgQDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAQ0BHQMBIgACEQEDEQH/xAAaAAACAwEBAAAAAAAAAAAAAAAFBgIDBAEH/8QAKxAAAQMDAgUDBQAAAAAAAAAAAQIDBAAFEQYSITETQVEHImFxgZGh/8QAFwEBAQEBAAAAAAAAAAAAAAAAAQIDBP/EAB8RAQEAAgICAgMAAAAAAAAAAAABAhEDIRIxQVEyYf/aAAwDAQACEQMRAD8A7oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABK5m2y5nY6c8uF8v8Ai7Vw+6jv6j7fO7m4wXxq2y4jR0uKp2GkV1nX9rQYp3s3i3b7jv3o8o5m9O2+q9l4qK8c8r3bqz0lq+2Jv2pXo8Wm2yWbT7a7fV2b9cZ0r5uLw8W0a7b9k4bqS2u3V2mY3j3bZ0mHkqfF8d0fF5y+q5bXvP0tq6o7v7p7b3G3m1m3t0bqWl8bYcWkWmVb8mKq1m1lqgV0p1h0mFfJf2lW8v1m7mQpGv3Y+P3c8p0n0e7a1x9pYwqvQyqXxq2nJmWm2w7J2bY9pY6qY8x8h2k0zq3vFfFZ+KcSx8i2bK2m2u2tq2m3bGmY1mV1mY2u1mYVbq2kq2mYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==" />
+      </div>
+      <div>
+        <h1>SKY Electrical — Invoice Builder</h1>
+        <p class="muted">Select items, set quantity, apply discounts + GST, then copy into Excel or download CSV.</p>
+      </div>
+    </div>
+    <div class="tag">WhatsApp: 8778 3810</div>
+  </div>
+
+  <!-- Client / Invoice Info -->
+  <div class="card">
+    <div class="row">
+      <div class="split">
+        <label>Client / Project</label>
+        <input id="client" placeholder="e.g. John Tan - BTO 4rm @ Punggol" style="width:100%" />
+      </div>
+      <div>
+        <label>Invoice No.</label>
+        <input id="invNo" placeholder="e.g. INV-0001" />
+      </div>
+      <div>
+        <label>Date</label>
+        <input id="invDate" type="date" />
+      </div>
+      <div>
+        <label>Prepared By</label>
+        <input id="preparedBy" value="SKY Electrical" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Items -->
+  <div class="card">
+    <div class="row">
+      <div class="split">
+        <label>Price List Item</label>
+        <select id="itemSelect" style="width:100%"></select>
+      </div>
+      <div>
+        <label>Qty</label>
+        <input id="qty" type="number" min="1" step="1" value="1" />
+      </div>
+      <div>
+        <label>Override Price (optional)</label>
+        <input id="override" type="number" min="0" step="0.01" placeholder="leave blank" />
+      </div>
+      <div>
+        <button id="addBtn">Add Item</button>
+      </div>
+      <div class="small">
+        <span class="pill">Tip: “Call For Price” items require Override Price.</span>
+      </div>
+    </div>
+
+    <hr class="sep"/>
+
+    <!-- Custom Item -->
+    <div class="row">
+      <div class="split">
+        <label>Other / Custom Item Name</label>
+        <input id="customName" placeholder="e.g. DB Box Upgrade / Transport / Site Survey" style="width:100%" />
+      </div>
+      <div>
+        <label>Unit Price (S$)</label>
+        <input id="customUnit" type="number" min="0" step="0.01" placeholder="e.g. 120" />
+      </div>
+      <div>
+        <label>Qty</label>
+        <input id="customQty" type="number" min="1" step="1" value="1" />
+      </div>
+      <div>
+        <button id="addCustomBtn" class="secondary">Add Custom Item</button>
+      </div>
+    </div>
+
+    <!-- Lines Table -->
+    <table id="lines">
+      <thead>
+        <tr>
+          <th style="width:38%">Description</th>
+          <th class="right" style="width:12%">Unit (S$)</th>
+          <th class="right" style="width:10%">Qty</th>
+          <th class="right" style="width:14%">Line Total</th>
+          <th style="width:18%">Notes</th>
+          <th class="right" style="width:8%">Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="margin-top:14px" class="row">
+      <div>
+        <label>Discount (%)</label>
+        <input id="discountPct" type="number" min="0" max="100" step="0.1" value="0" />
+      </div>
+      <div>
+        <label>Discount (S$) (optional)</label>
+        <input id="discountAmt" type="number" min="0" step="0.01" value="0" />
+      </div>
+      <div>
+        <label>Additional Charges (S$)</label>
+        <input id="addon" type="number" min="0" step="0.01" value="0" />
+      </div>
+
+      <div style="flex:1"></div>
+
+      <div>
+        <label>GST</label>
+        <div class="toggle">
+          <input id="gstOn" type="checkbox" />
+          <div class="small" style="min-width:120px;">Add GST</div>
+          <select id="gstRate" class="mini" title="GST Rate">
+            <option value="9">9%</option>
+            <option value="8">8%</option>
+            <option value="custom">Custom</option>
+          </select>
+          <input id="gstCustom" class="mini" type="number" min="0" step="0.1" value="9" style="display:none" />
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px" class="totalBox">
+      <div>
+        <div class="small">Subtotal</div>
+        <div class="big" id="subTotal">S$ 0.00</div>
+      </div>
+      <div>
+        <div class="small">Discount Total</div>
+        <div class="big" id="discountTotal">- S$ 0.00</div>
+      </div>
+      <div>
+        <div class="small">GST</div>
+        <div class="big" id="gstTotal">S$ 0.00</div>
+      </div>
+      <div>
+        <div class="small">Grand Total</div>
+        <div class="big" id="grandTotal">S$ 0.00</div>
+      </div>
+    </div>
+
+    <p class="notice">
+      Notes: Override price only if needed. Add “Other / Custom Item” for flexible items.
+    </p>
+  </div>
+
+  <!-- Excel/CSV Export -->
+  <div class="card">
+    <h3 style="margin:0 0 10px;">Excel Copy Area</h3>
+    <p class="small">Click “Generate”, then copy and paste into Excel. (Tab-separated columns)</p>
+    <div class="footerBtns">
+      <button class="secondary" id="genBtn">Generate Excel Text</button>
+      <button id="copyBtn">Copy to Clipboard</button>
+      <button class="secondary" id="csvBtn">Download CSV</button>
+      <button class="danger" id="clearBtn">Clear All</button>
+    </div>
+    <div style="margin-top:10px">
+      <textarea id="excelOut" class="mono" placeholder="Your Excel-ready text will appear here..."></textarea>
+    </div>
+    <p class="small">Format: Description | Unit Price | Qty | Line Total | Notes</p>
+  </div>
+
+</div>
+
+<script>
+  // ===== PRICE LIST (from your PDF) =====
+  // If you want to edit prices later, update them here.
+  const PRICE_LIST = [
+    { name: "Lighting Point", price: 35.00 },
+    { name: "Lighting Point Conceal", price: 65.00 },
+    { name: "Ceiling Fan Point", price: 65.00 },
+    { name: "Shift Lighting Point", price: 35.00 },
+    { name: "Shift Fan Point", price: 35.00 },
+    { name: "LED Point", price: 55.00 },
+    { name: "Conceal Light Switch Box", price: 40.00 },
+    { name: "Conceal Light Switch", price: 35.00 },
+    { name: "2Way Switch For Light", price: 85.00 },
+    { name: "1x13A Point", price: 70.00 },
+    { name: "2x13A Point", price: 75.00 },
+    { name: "1x15A Point", price: 95.00 },
+    { name: "Isolator 20A SPN For Air Con", price: 190.00 },
+    { name: "Heater Point", price: 90.00 },
+    { name: "Heater Point 2Way", price: 220.00 },
+    { name: "Data Point Cat 6 Cable", price: 125.00 },
+    { name: "Hood Point 13A + Switch", price: 85.00 },
+    { name: "Cooker Point 13A + Switch", price: 85.00 },
+    { name: "Cooker Point 15A + Switch", price: 90.00 },
+    { name: "Cooker Point 20A + Switch", price: 145.00 },
+    { name: "Cooker Point 32A + Switch (6mm Cable)", price: 240.00 },
+    { name: "Oven Point 15A + Switch", price: 100.00 },
+    { name: "Microwave Point 13A + Switch", price: 85.00 },
+    { name: "Master Switch For Power Point", price: 100.00 },
+    { name: "Extend 1x13A / 2x13A Point", price: 35.00 },
+    { name: "Extend Data / Tel Point", price: 55.00 },
+    { name: "Extend Heater Point", price: 45.00 },
+    { name: "Extend Light Switch 1G", price: 30.00 },
+    { name: "Extend Light Switch 2G", price: 40.00 },
+    { name: "Extend Light Switch 3G", price: 50.00 },
+    { name: "Install Light", price: 10.00 },
+    { name: "Install LED", price: 20.00 },
+    { name: "Install Light Bigger", price: 20.00 },
+    { name: "Install Fan", price: 50.00 },
+    { name: "Install Track Light 1 Meter", price: 20.00 },
+    { name: "Install Track Light 2 Meter", price: 30.00 },
+    { name: "Install Track Light 3 Meter", price: 40.00 },
+    { name: "Install T5", price: 6.00 },
+    { name: "Install Hanging Light (Normal)", price: 40.00 },
+    { name: "Install Hanging Light (Bigger)", price: null }, // Call for price
+    { name: "Install Wall Fan", price: 30.00 },
+    { name: "Changing Light Switch Socket 1G/2G/3G/4G", price: 15.00 },
+    { name: "Changing Power Socket 2x13A / 1x13A / Heater", price: 20.00 },
+    { name: "Changing 2 Way Heater Socket", price: 60.00 },
+    { name: "Changing Data Socket 1G", price: 25.00 },
+    { name: "Changing Data Socket 2G", price: 35.00 },
+    { name: "Changing Data Socket 4G", price: 50.00 },
+    { name: "Supply Waterproof Cover 1x13A / 2x13A", price: 20.00 },
+    { name: "Supply IP66 Socket 1x13A / 2x13A", price: 55.00 }
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => (Math.round(n * 100) / 100).toFixed(2);
+
+  const state = {
+    lines: [] // {name, unit, qty, notes}
+  };
+
+  function init() {
+    // date default today
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const dd = String(today.getDate()).padStart(2,'0');
+    $("invDate").value = `${yyyy}-${mm}-${dd}`;
+
+    // populate dropdown
+    const sel = $("itemSelect");
+    sel.innerHTML = PRICE_LIST.map((it, idx) => {
+      const label = it.price == null ? `${it.name} (Call For Price)` : `${it.name} — S$${fmt(it.price)}`;
+      return `<option value="${idx}">${escapeHtml(label)}</option>`;
+    }).join("");
+
+    $("addBtn").addEventListener("click", addItem);
+    $("addCustomBtn").addEventListener("click", addCustomItem);
+
+    $("discountPct").addEventListener("input", renderTotals);
+    $("discountAmt").addEventListener("input", renderTotals);
+    $("addon").addEventListener("input", renderTotals);
+
+    $("gstOn").addEventListener("change", renderTotals);
+    $("gstRate").addEventListener("change", handleGstRateChange);
+    $("gstCustom").addEventListener("input", renderTotals);
+
+    $("genBtn").addEventListener("click", generateExcelText);
+    $("copyBtn").addEventListener("click", copyExcelText);
+    $("csvBtn").addEventListener("click", downloadCSV);
+    $("clearBtn").addEventListener("click", clearAll);
+
+    render();
+  }
+
+  function handleGstRateChange() {
+    const v = $("gstRate").value;
+    if (v === "custom") {
+      $("gstCustom").style.display = "inline-block";
+      $("gstCustom").value = $("gstCustom").value || "9";
+    } else {
+      $("gstCustom").style.display = "none";
+    }
+    renderTotals();
+  }
+
+  function getGstRatePct() {
+    if (!$("gstOn").checked) return 0;
+    const v = $("gstRate").value;
+    if (v === "custom") {
+      const c = Number($("gstCustom").value || 0);
+      return Math.max(0, c);
+    }
+    return Number(v || 0);
+  }
+
+  function addItem() {
+    const idx = Number($("itemSelect").value);
+    const qty = Number($("qty").value || 0);
+    const override = $("override").value.trim();
+
+    if (!qty || qty < 1) return alert("Qty must be at least 1.");
+
+    const item = PRICE_LIST[idx];
+    let unit = item.price;
+
+    if (unit == null && override === "") {
+      return alert("This item is Call For Price. Please enter Override Price.");
+    }
+
+    if (override !== "") {
+      unit = Number(override);
+      if (isNaN(unit) || unit < 0) return alert("Override price must be a valid number.");
+    }
+
+    state.lines.push({
+      name: item.name,
+      unit,
+      qty: Math.floor(qty),
+      notes: (item.price == null ? "Call for price item; override applied." : "")
+    });
+
+    $("override").value = "";
+    $("qty").value = 1;
+    render();
+  }
+
+  function addCustomItem() {
+    const name = $("customName").value.trim();
+    const unit = Number($("customUnit").value);
+    const qty  = Number($("customQty").value || 0);
+
+    if (!name) return alert("Please enter a Custom Item Name.");
+    if (isNaN(unit) || unit < 0) return alert("Please enter a valid Unit Price.");
+    if (!qty || qty < 1) return alert("Qty must be at least 1.");
+
+    state.lines.push({
+      name,
+      unit,
+      qty: Math.floor(qty),
+      notes: ""
+    });
+
+    $("customName").value = "";
+    $("customUnit").value = "";
+    $("customQty").value = 1;
+
+    render();
+  }
+
+  function removeLine(i) {
+    state.lines.splice(i, 1);
+    render();
+  }
+
+  function updateQty(i, v) {
+    const q = Number(v);
+    state.lines[i].qty = (!q || q < 0) ? 0 : Math.floor(q);
+    renderTotals();
+    renderTable();
+  }
+
+  function updateUnit(i, v) {
+    const u = Number(v);
+    state.lines[i].unit = (isNaN(u) || u < 0) ? 0 : u;
+    renderTotals();
+    renderTable();
+  }
+
+  function updateName(i, v) {
+    state.lines[i].name = v;
+  }
+
+  function updateNotes(i, v) {
+    state.lines[i].notes = v;
+  }
+
+  function render() {
+    renderTable();
+    renderTotals();
+  }
+
+  function renderTable() {
+    const tb = document.querySelector("#lines tbody");
+    tb.innerHTML = "";
+
+    state.lines.forEach((ln, i) => {
+      const lineTotal = (ln.unit || 0) * (ln.qty || 0);
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>
+          <input type="text" value="${escapeAttr(ln.name)}" style="width:100%"
+            oninput="window.__updateName(${i}, this.value)" />
+        </td>
+        <td class="right">
+          <input type="number" min="0" step="0.01" value="${fmt(ln.unit || 0)}" style="width:120px;text-align:right"
+            oninput="window.__updateUnit(${i}, this.value)" />
+        </td>
+        <td class="right">
+          <input type="number" min="0" step="1" value="${ln.qty}" style="width:90px;text-align:right"
+            oninput="window.__updateQty(${i}, this.value)" />
+        </td>
+        <td class="right">${fmt(lineTotal)}</td>
+        <td>
+          <input type="text" value="${escapeAttr(ln.notes || "")}" placeholder="Optional notes"
+            style="width:100%" oninput="window.__updateNotes(${i}, this.value)" />
+        </td>
+        <td class="right">
+          <button class="secondary" onclick="window.__removeLine(${i})">Remove</button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+  }
+
+  function calcTotals() {
+    const subtotal = state.lines.reduce((s, ln) => s + (ln.unit || 0) * (ln.qty || 0), 0);
+
+    const discountPct = Math.max(0, Math.min(100, Number($("discountPct").value || 0)));
+    const discountAmt = Math.max(0, Number($("discountAmt").value || 0));
+    const addon = Math.max(0, Number($("addon").value || 0));
+
+    const pctDiscountValue = subtotal * discountPct / 100;
+    const afterPct = Math.max(0, subtotal - pctDiscountValue);
+    const afterAllDiscounts = Math.max(0, afterPct - discountAmt);
+
+    const netBeforeGst = afterAllDiscounts + addon;
+
+    const gstRate = getGstRatePct();
+    const gstValue = netBeforeGst * gstRate / 100;
+
+    const grand = Math.max(0, netBeforeGst + gstValue);
+
+    return { subtotal, discountPct, discountAmt, pctDiscountValue, addon, gstRate, gstValue, grand, netBeforeGst };
+  }
+
+  function renderTotals() {
+    const t = calcTotals();
+    $("subTotal").textContent = `S$ ${fmt(t.subtotal)}`;
+
+    const discTotal = t.pctDiscountValue + t.discountAmt;
+    $("discountTotal").textContent = `- S$ ${fmt(discTotal)}`;
+
+    $("gstTotal").textContent = t.gstRate > 0 ? `S$ ${fmt(t.gstValue)}` : `S$ 0.00`;
+    $("grandTotal").textContent = `S$ ${fmt(t.grand)}`;
+  }
+
+  function generateExcelText() {
+    const t = calcTotals();
+    const header = ["Description","Unit Price (S$)","Qty","Line Total (S$)","Notes"];
+    const rows = [header];
+
+    state.lines.forEach(ln => {
+      const lineTotal = (ln.unit || 0) * (ln.qty || 0);
+      rows.push([
+        ln.name,
+        fmt(ln.unit || 0),
+        String(ln.qty || 0),
+        fmt(lineTotal),
+        ln.notes || ""
+      ]);
+    });
+
+    rows.push(["","","","",""]);
+    rows.push(["Subtotal","","","S$ " + fmt(t.subtotal), ""]);
+
+    if (t.discountPct) rows.push([`Discount (${fmt(t.discountPct)}%)`,"","","-S$ " + fmt(t.pctDiscountValue), ""]);
+    if (t.discountAmt) rows.push(["Discount (S$)","","","-S$ " + fmt(t.discountAmt), ""]);
+    if (t.addon) rows.push(["Additional Charges","","","S$ " + fmt(t.addon), ""]);
+
+    if (t.gstRate > 0) rows.push([`GST (${fmt(t.gstRate)}%)`,"","","S$ " + fmt(t.gstValue), ""]);
+
+    rows.push(["Grand Total","","","S$ " + fmt(t.grand), ""]);
+
+    // Optional header block (nice when pasting into Excel)
+    rows.unshift(["Invoice Date", $("invDate").value, "", "Invoice No.", $("invNo").value || ""]);
+    rows.unshift(["Client / Project", $("client").value || "", "", "Prepared By", $("preparedBy").value || "SKY Electrical"]);
+    rows.unshift(["", "", "", "", ""]);
+    rows.unshift(["SKY Electrical", "WhatsApp: 8778 3810", "", "", ""]);
+
+    const tsv = rows.map(r => r.map(cell => String(cell).replace(/\t/g," ")).join("\t")).join("\n");
+    $("excelOut").value = tsv;
+  }
+
+  async function copyExcelText() {
+    const text = $("excelOut").value.trim();
+    if (!text) return alert("Click Generate Excel Text first.");
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Copied! Paste directly into Excel.");
+    } catch (e) {
+      $("excelOut").focus();
+      $("excelOut").select();
+      document.execCommand("copy");
+      alert("Copied! Paste directly into Excel.");
+    }
+  }
+
+  function downloadCSV() {
+    generateExcelText();
+    const tsv = $("excelOut").value;
+    const lines = tsv.split("\n");
+    const csv = lines.map(line =>
+      line.split("\t").map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(",")
+    ).join("\n");
+
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sky-electrical-invoice.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function clearAll() {
+    if (!confirm("Clear all lines?")) return;
+    state.lines = [];
+    $("discountPct").value = 0;
+    $("discountAmt").value = 0;
+    $("addon").value = 0;
+    $("gstOn").checked = false;
+    $("gstRate").value = "9";
+    $("gstCustom").style.display = "none";
+    $("excelOut").value = "";
+    render();
+  }
+
+  // Helpers
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+  function escapeAttr(s){ return escapeHtml(s).replace(/"/g, '&quot;'); }
+
+  // Expose handlers for inline events
+  window.__removeLine = removeLine;
+  window.__updateQty = updateQty;
+  window.__updateUnit = updateUnit;
+  window.__updateName = updateName;
+  window.__updateNotes = updateNotes;
+
+  init();
+</script>
 </body>
 </html>
