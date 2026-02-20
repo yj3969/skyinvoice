@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SKY Electrical — Invoice Builder</title>
+  <title>SKY Electrical — Invoice Builder 报价单系统</title>
   <style>
     :root{
       --bg:#f6f7f9;
@@ -83,7 +83,7 @@
       white-space:nowrap;
     }
 
-    /* GRID LAYOUT (fixes your formatting issue) */
+    /* GRID LAYOUT */
     .grid{
       display:grid;
       grid-template-columns: 340px 1fr 320px; /* Left | Middle | Right */
@@ -164,10 +164,6 @@
       flex:0 0 140px;
       min-width: 140px;
     }
-    .colMed{
-      flex:0 0 200px;
-      min-width: 200px;
-    }
     .btn{
       background: var(--btn);
       color: var(--btnText);
@@ -191,6 +187,7 @@
       font-size:12px;
       color: var(--muted);
       margin-top:8px;
+      line-height: 1.35;
     }
     hr.sep{
       border:none;
@@ -202,7 +199,6 @@
       width:100%;
       border-collapse: collapse;
       margin-top:10px;
-      overflow:hidden;
     }
     th, td{
       padding: 10px 8px;
@@ -230,9 +226,7 @@
       margin-top: 12px;
     }
     @media (max-width: 640px){
-      .totals{
-        grid-template-columns: repeat(2, minmax(0,1fr));
-      }
+      .totals{ grid-template-columns: repeat(2, minmax(0,1fr)); }
     }
     .totalBox{
       border:1px solid #eef1f6;
@@ -253,9 +247,7 @@
       border-radius: 12px;
       background:#fbfcfe;
     }
-    .toggleRow input[type="checkbox"]{
-      width:18px; height:18px;
-    }
+    .toggleRow input[type="checkbox"]{ width:18px; height:18px; }
 
     textarea{
       min-height: 170px;
@@ -264,7 +256,6 @@
       line-height: 1.35;
     }
 
-    /* Make right column buttons full width for nicer layout */
     .rightCol .btn, .rightCol .btn.secondary, .rightCol .btn.danger{
       width:100%;
       text-align:center;
@@ -274,6 +265,8 @@
       flex-direction:column;
       gap:10px;
     }
+
+    .bilingualSmall{ color: var(--muted); font-size: 11px; }
   </style>
 </head>
 
@@ -282,97 +275,106 @@
     <div class="header">
       <div class="brand">
         <div class="logoBox">
-          <!-- IMPORTANT: file must exist in repo root -->
           <img src="photo_2026-02-20_11-50-15.jpg" alt="SKY Electrical Logo">
         </div>
         <div class="title">
-          <h1>SKY Electrical — Invoice Builder</h1>
-          <p>Build invoice → Copy to Excel → Done. Mobile-friendly.</p>
+          <h1>SKY Electrical — Invoice Builder 报价单系统</h1>
+          <p>
+            Build invoice → Copy to Excel → Done. Mobile-friendly.<br>
+            建立报价单 → 复制到 Excel → 完成（支持手机使用）
+          </p>
         </div>
       </div>
-      <div class="chip">WhatsApp: <strong>8778 3810</strong></div>
+      <div class="chip">WhatsApp: <strong>8778 3810</strong>（微信/WhatsApp 询问）</div>
     </div>
 
     <div class="grid">
-      <!-- LEFT: Client -->
+      <!-- LEFT -->
       <div class="leftCol card">
-        <h3 class="sectionTitle">Client / Invoice</h3>
+        <h3 class="sectionTitle">Client / Invoice 客户资料 / 报价单</h3>
 
         <div style="margin-bottom:10px">
-          <label>Client / Project</label>
-          <input id="client" placeholder="e.g. John Tan - BTO 4rm @ Punggol">
+          <label>Client / Project 客户 / 项目</label>
+          <input id="client" placeholder="e.g. John Tan - BTO 4rm @ Punggol / 例如：张先生 - BTO @ 榜鹅">
         </div>
 
         <div style="margin-bottom:10px">
-          <label>Invoice No.</label>
-          <input id="invNo" placeholder="e.g. INV-0001">
+          <label>Invoice No. 报价单编号</label>
+          <input id="invNo" placeholder="e.g. INV-0001 / 例如：SKY-2026-0001">
         </div>
 
         <div style="margin-bottom:10px">
-          <label>Date</label>
+          <label>Date 日期</label>
           <input id="invDate" type="date">
         </div>
 
         <div>
-          <label>Prepared By</label>
+          <label>Prepared By 制作人</label>
           <input id="preparedBy" value="SKY Electrical">
         </div>
 
-        <p class="hint">Tip: Save invoice no. like <b>SKY-2026-0007</b> for tracking.</p>
+        <p class="hint">
+          Tip: Save invoice no. like <b>SKY-2026-0007</b> for tracking.<br>
+          提示：建议用编号方便追踪，例如 <b>SKY-2026-0007</b>
+        </p>
       </div>
 
-      <!-- MIDDLE: Builder -->
+      <!-- MIDDLE -->
       <div class="mainCol card">
-        <h3 class="sectionTitle">Invoice Builder</h3>
+        <h3 class="sectionTitle">Invoice Builder 报价项目</h3>
 
         <div class="row">
           <div class="col">
-            <label>Price List Item</label>
+            <label>Price List Item 价格项目</label>
             <select id="itemSelect"></select>
+            <div class="bilingualSmall">Select from list / 从列表选择</div>
           </div>
           <div class="colSmall">
-            <label>Qty</label>
+            <label>Qty 数量</label>
             <input id="qty" type="number" min="1" step="1" value="1">
           </div>
           <div class="colSmall">
-            <label>Override (S$)</label>
-            <input id="override" type="number" min="0" step="0.01" placeholder="optional">
+            <label>Override (S$) 自定义价格</label>
+            <input id="override" type="number" min="0" step="0.01" placeholder="optional / 可选">
           </div>
           <div class="colSmall">
-            <button class="btn" id="addBtn">Add Item</button>
+            <button class="btn" id="addBtn">Add Item 添加项目</button>
           </div>
         </div>
-        <div class="hint">“Call For Price” items require Override.</div>
+        <div class="hint">
+          “Call For Price” items require Override.<br>
+          “价格另议”项目必须填写自定义价格
+        </div>
 
         <hr class="sep">
 
         <div class="row">
           <div class="col">
-            <label>Other / Custom Item Name</label>
-            <input id="customName" placeholder="e.g. DB Box Upgrade / Transport / Site Survey">
+            <label>Other / Custom Item Name 自定义项目名称</label>
+            <input id="customName" placeholder="e.g. DB Box Upgrade / Transport / Site Survey / 例如：电箱升级/交通费/现场勘察">
           </div>
           <div class="colSmall">
-            <label>Unit (S$)</label>
-            <input id="customUnit" type="number" min="0" step="0.01" placeholder="e.g. 120">
+            <label>Unit (S$) 单价</label>
+            <input id="customUnit" type="number" min="0" step="0.01" placeholder="e.g. 120 / 例如：120">
           </div>
           <div class="colSmall">
-            <label>Qty</label>
+            <label>Qty 数量</label>
             <input id="customQty" type="number" min="1" step="1" value="1">
           </div>
           <div class="colSmall">
-            <button class="btn secondary" id="addCustomBtn">Add Custom</button>
+            <button class="btn secondary" id="addCustomBtn">Add Custom 添加自定义</button>
           </div>
         </div>
 
         <table id="lines">
           <thead>
             <tr>
-              <th style="width:38%">Description</th>
-              <th class="right" style="width:14%">Unit (S$)</th>
-              <th class="right" style="width:10%">Qty</th>
-              <th class="right" style="width:14%">Line Total</th>
-              <th style="width:18%">Notes</th>
-              <th class="right" style="width:6%"> </th>
+              <th style="width:38%">Description 项目</th>
+              <th class="right" style="width:14%">Unit (S$) 单价</th>
+              <th class="right" style="width:10%">Qty 数量</th>
+              <th class="right" style="width:14%">Line Total 小计</th>
+              <th style="width:18%">Notes 备注</th>
+              <th class="right" style="width:6%"></th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -382,147 +384,145 @@
 
         <div class="row">
           <div class="colSmall">
-            <label>Discount (%)</label>
+            <label>Discount (%) 折扣（百分比）</label>
             <input id="discountPct" type="number" min="0" max="100" step="0.1" value="0">
           </div>
           <div class="colSmall">
-            <label>Discount (S$)</label>
+            <label>Discount (S$) 折扣（金额）</label>
             <input id="discountAmt" type="number" min="0" step="0.01" value="0">
           </div>
           <div class="colSmall">
-            <label>Add-ons (S$)</label>
+            <label>Add-ons (S$) 额外费用</label>
             <input id="addon" type="number" min="0" step="0.01" value="0">
           </div>
           <div class="col">
-            <label>GST</label>
+            <label>GST 消费税</label>
             <div class="toggleRow">
               <input id="gstOn" type="checkbox">
-              <div style="font-size:13px;color:#111827;">Add GST</div>
+              <div style="font-size:13px;color:#111827;">Add GST 加 GST</div>
               <select id="gstRate" style="max-width:140px">
                 <option value="9">9%</option>
                 <option value="8">8%</option>
-                <option value="custom">Custom</option>
+                <option value="custom">Custom 自定义</option>
               </select>
               <input id="gstCustom" type="number" min="0" step="0.1" value="9" style="max-width:120px; display:none;">
             </div>
+            <div class="bilingualSmall">If custom, enter rate / 自定义请输入税率</div>
           </div>
         </div>
 
         <div class="totals">
           <div class="totalBox">
-            <div class="k">Subtotal</div>
+            <div class="k">Subtotal 小计</div>
             <div class="v" id="subTotal">S$ 0.00</div>
           </div>
           <div class="totalBox">
-            <div class="k">Discount Total</div>
+            <div class="k">Discount Total 折扣合计</div>
             <div class="v" id="discountTotal">- S$ 0.00</div>
           </div>
           <div class="totalBox">
-            <div class="k">GST</div>
+            <div class="k">GST 税额</div>
             <div class="v" id="gstTotal">S$ 0.00</div>
           </div>
           <div class="totalBox">
-            <div class="k">Grand Total</div>
+            <div class="k">Grand Total 总计</div>
             <div class="v" id="grandTotal">S$ 0.00</div>
           </div>
         </div>
 
-        <p class="hint">You can edit line description + unit price directly in the table for flexibility.</p>
+        <p class="hint">
+          You can edit line description + unit price directly in the table for flexibility.<br>
+          可直接在表格内修改项目名称与单价，更灵活
+        </p>
       </div>
 
-      <!-- RIGHT: Excel tools -->
+      <!-- RIGHT -->
       <div class="rightCol card">
-        <h3 class="sectionTitle">Excel Copy Area</h3>
+        <h3 class="sectionTitle">Excel Copy Area 复制到 Excel</h3>
         <p class="hint" style="margin-top:0">
-          Click <b>Generate</b>, then <b>Copy</b> and paste into Excel (tab-separated columns).
+          Click <b>Generate</b>, then <b>Copy</b> and paste into Excel.<br>
+          点击<b>生成</b> → 点击<b>复制</b> → 粘贴到 Excel（制表符分列）
         </p>
 
         <div class="stackBtns">
-          <button class="btn secondary" id="genBtn">Generate Excel Text</button>
-          <button class="btn" id="copyBtn">Copy to Clipboard</button>
-          <button class="btn secondary" id="csvBtn">Download CSV</button>
-          <button class="btn danger" id="clearBtn">Clear All</button>
+          <button class="btn secondary" id="genBtn">Generate Excel Text 生成Excel文本</button>
+          <button class="btn" id="copyBtn">Copy to Clipboard 复制</button>
+          <button class="btn secondary" id="csvBtn">Download CSV 下载CSV</button>
+          <button class="btn danger" id="clearBtn">Clear All 清空</button>
         </div>
 
         <div style="margin-top:10px">
-          <textarea id="excelOut" placeholder="Your Excel-ready text will appear here..."></textarea>
+          <textarea id="excelOut" placeholder="Your Excel-ready text will appear here... / 生成的Excel文本会显示在这里..."></textarea>
         </div>
 
-        <p class="hint">Format: Description | Unit Price | Qty | Line Total | Notes</p>
+        <p class="hint">Format 格式：项目 | 单价 | 数量 | 小计 | 备注</p>
       </div>
     </div>
   </div>
 
 <script>
-  // ===== Price list (from your uploaded SG price list PDF) =====
   const PRICE_LIST = [
-    { name: "Lighting Point", price: 35.00 },
-    { name: "Lighting Point Conceal", price: 65.00 },
-    { name: "Ceiling Fan Point", price: 65.00 },
-    { name: "Shift Lighting Point", price: 35.00 },
-    { name: "Shift Fan Point", price: 35.00 },
-    { name: "LED Point", price: 55.00 },
-    { name: "Conceal Light Switch Box", price: 40.00 },
-    { name: "Conceal Light Switch", price: 35.00 },
-    { name: "2Way Switch For Light", price: 85.00 },
-    { name: "1x13A Point", price: 70.00 },
-    { name: "2x13A Point", price: 75.00 },
-    { name: "1x15A Point", price: 95.00 },
-    { name: "Isolator 20A SPN For Air Con", price: 190.00 },
-    { name: "Heater Point", price: 90.00 },
-    { name: "Heater Point 2Way", price: 220.00 },
-    { name: "Data Point Cat 6 Cable", price: 125.00 },
-    { name: "Hood Point 13A + Switch", price: 85.00 },
-    { name: "Cooker Point 13A + Switch", price: 85.00 },
-    { name: "Cooker Point 15A + Switch", price: 90.00 },
-    { name: "Cooker Point 20A + Switch", price: 145.00 },
-    { name: "Cooker Point 32A + Switch (6mm Cable)", price: 240.00 },
-    { name: "Oven Point 15A + Switch", price: 100.00 },
-    { name: "Microwave Point 13A + Switch", price: 85.00 },
-    { name: "Master Switch For Power Point", price: 100.00 },
-    { name: "Extend 1x13A / 2x13A Point", price: 35.00 },
-    { name: "Extend Data / Tel Point", price: 55.00 },
-    { name: "Extend Heater Point", price: 45.00 },
-    { name: "Extend Light Switch 1G", price: 30.00 },
-    { name: "Extend Light Switch 2G", price: 40.00 },
-    { name: "Extend Light Switch 3G", price: 50.00 },
-    { name: "Install Light", price: 10.00 },
-    { name: "Install LED", price: 20.00 },
-    { name: "Install Light Bigger", price: 20.00 },
-    { name: "Install Fan", price: 50.00 },
-    { name: "Install Track Light 1 Meter", price: 20.00 },
-    { name: "Install Track Light 2 Meter", price: 30.00 },
-    { name: "Install Track Light 3 Meter", price: 40.00 },
-    { name: "Install T5", price: 6.00 },
-    { name: "Install Hanging Light (Normal)", price: 40.00 },
-    { name: "Install Hanging Light (Bigger)", price: null }, // Call for price
-    { name: "Install Wall Fan", price: 30.00 },
-    { name: "Changing Light Switch Socket 1G/2G/3G/4G", price: 15.00 },
-    { name: "Changing Power Socket 2x13A / 1x13A / Heater", price: 20.00 },
-    { name: "Changing 2 Way Heater Socket", price: 60.00 },
-    { name: "Changing Data Socket 1G", price: 25.00 },
-    { name: "Changing Data Socket 2G", price: 35.00 },
-    { name: "Changing Data Socket 4G", price: 50.00 },
-    { name: "Supply Waterproof Cover 1x13A / 2x13A", price: 20.00 },
-    { name: "Supply IP66 Socket 1x13A / 2x13A", price: 55.00 }
+    { name: "Lighting Point 灯位", price: 35.00 },
+    { name: "Lighting Point Conceal 暗线灯位", price: 65.00 },
+    { name: "Ceiling Fan Point 风扇位", price: 65.00 },
+    { name: "Shift Lighting Point 移灯位", price: 35.00 },
+    { name: "Shift Fan Point 移风扇位", price: 35.00 },
+    { name: "LED Point LED灯位", price: 55.00 },
+    { name: "Conceal Light Switch Box 暗线开关盒", price: 40.00 },
+    { name: "Conceal Light Switch 暗线开关", price: 35.00 },
+    { name: "2Way Switch For Light 双控开关", price: 85.00 },
+    { name: "1x13A Point 13A插座(单)", price: 70.00 },
+    { name: "2x13A Point 13A插座(双)", price: 75.00 },
+    { name: "1x15A Point 15A插座", price: 95.00 },
+    { name: "Isolator 20A SPN For Air Con 冷气隔离开关", price: 190.00 },
+    { name: "Heater Point 热水器点位", price: 90.00 },
+    { name: "Heater Point 2Way 热水器双控", price: 220.00 },
+    { name: "Data Point Cat 6 Cable 网线点(Cat6)", price: 125.00 },
+    { name: "Hood Point 13A + Switch 抽油烟机点位", price: 85.00 },
+    { name: "Cooker Point 13A + Switch 炉具点位13A", price: 85.00 },
+    { name: "Cooker Point 15A + Switch 炉具点位15A", price: 90.00 },
+    { name: "Cooker Point 20A + Switch 炉具点位20A", price: 145.00 },
+    { name: "Cooker Point 32A + Switch (6mm Cable) 炉具点位32A", price: 240.00 },
+    { name: "Oven Point 15A + Switch 烤箱点位15A", price: 100.00 },
+    { name: "Microwave Point 13A + Switch 微波炉点位", price: 85.00 },
+    { name: "Master Switch For Power Point 总开关(插座)", price: 100.00 },
+    { name: "Extend 1x13A / 2x13A Point 延长插座点", price: 35.00 },
+    { name: "Extend Data / Tel Point 延长网络/电话点", price: 55.00 },
+    { name: "Extend Heater Point 延长热水器点", price: 45.00 },
+    { name: "Extend Light Switch 1G 延长开关1位", price: 30.00 },
+    { name: "Extend Light Switch 2G 延长开关2位", price: 40.00 },
+    { name: "Extend Light Switch 3G 延长开关3位", price: 50.00 },
+    { name: "Install Light 安装灯具", price: 10.00 },
+    { name: "Install LED 安装LED", price: 20.00 },
+    { name: "Install Light Bigger 安装大灯具", price: 20.00 },
+    { name: "Install Fan 安装风扇", price: 50.00 },
+    { name: "Install Track Light 1 Meter 轨道灯1米", price: 20.00 },
+    { name: "Install Track Light 2 Meter 轨道灯2米", price: 30.00 },
+    { name: "Install Track Light 3 Meter 轨道灯3米", price: 40.00 },
+    { name: "Install T5 安装T5", price: 6.00 },
+    { name: "Install Hanging Light (Normal) 吊灯(普通)", price: 40.00 },
+    { name: "Install Hanging Light (Bigger) 吊灯(大型)", price: null },
+    { name: "Install Wall Fan 安装壁扇", price: 30.00 },
+    { name: "Changing Light Switch Socket 1G/2G/3G/4G 更换开关面板", price: 15.00 },
+    { name: "Changing Power Socket 2x13A / 1x13A / Heater 更换插座", price: 20.00 },
+    { name: "Changing 2 Way Heater Socket 更换热水器双控", price: 60.00 },
+    { name: "Changing Data Socket 1G 更换网络面板1位", price: 25.00 },
+    { name: "Changing Data Socket 2G 更换网络面板2位", price: 35.00 },
+    { name: "Changing Data Socket 4G 更换网络面板4位", price: 50.00 },
+    { name: "Supply Waterproof Cover 1x13A / 2x13A 防水盖", price: 20.00 },
+    { name: "Supply IP66 Socket 1x13A / 2x13A IP66防水插座", price: 55.00 }
   ];
 
   const $ = (id) => document.getElementById(id);
   const fmt = (n) => (Math.round(n * 100) / 100).toFixed(2);
-
-  const state = { lines: [] }; // {name, unit, qty, notes}
+  const state = { lines: [] };
 
   function init() {
-    // date default today
     const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,'0');
-    const dd = String(d.getDate()).padStart(2,'0');
-    $("invDate").value = `${yyyy}-${mm}-${dd}`;
+    $("invDate").value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
-    // populate dropdown
     $("itemSelect").innerHTML = PRICE_LIST.map((it, idx) => {
-      const label = it.price == null ? `${it.name} (Call For Price)` : `${it.name} — S$${fmt(it.price)}`;
+      const label = it.price == null ? `${it.name}（价格另议）` : `${it.name} — S$${fmt(it.price)}`;
       return `<option value="${idx}">${escapeHtml(label)}</option>`;
     }).join("");
 
@@ -562,18 +562,18 @@
     const qty = Math.floor(Number($("qty").value || 0));
     const override = $("override").value.trim();
 
-    if (!qty || qty < 1) return alert("Qty must be at least 1.");
+    if (!qty || qty < 1) return alert("Qty must be at least 1 / 数量必须至少1");
 
     const item = PRICE_LIST[idx];
     let unit = item.price;
 
-    if (unit == null && override === "") return alert("This item is Call For Price. Please enter Override.");
+    if (unit == null && override === "") return alert("Call For Price item, please enter Override / 价格另议项目，请填写自定义价格");
     if (override !== "") {
       unit = Number(override);
-      if (isNaN(unit) || unit < 0) return alert("Override must be a valid number.");
+      if (isNaN(unit) || unit < 0) return alert("Override must be valid number / 自定义价格必须是数字");
     }
 
-    state.lines.push({ name: item.name, unit, qty, notes: item.price == null ? "Override applied" : "" });
+    state.lines.push({ name: item.name, unit, qty, notes: item.price == null ? "Override applied / 已填写自定义价格" : "" });
 
     $("override").value = "";
     $("qty").value = 1;
@@ -585,9 +585,9 @@
     const unit = Number($("customUnit").value);
     const qty  = Math.floor(Number($("customQty").value || 0));
 
-    if (!name) return alert("Enter a Custom Item Name.");
-    if (isNaN(unit) || unit < 0) return alert("Enter a valid Unit Price.");
-    if (!qty || qty < 1) return alert("Qty must be at least 1.");
+    if (!name) return alert("Enter Custom Item Name / 请输入自定义项目名称");
+    if (isNaN(unit) || unit < 0) return alert("Enter valid Unit Price / 请输入正确单价");
+    if (!qty || qty < 1) return alert("Qty must be at least 1 / 数量必须至少1");
 
     state.lines.push({ name, unit, qty, notes: "" });
 
@@ -603,10 +603,7 @@
   function updateQty(i,v){ const q=Math.floor(Number(v)); state.lines[i].qty = (!q||q<0)?0:q; renderTotals(); renderTable(); }
   function updateNotes(i,v){ state.lines[i].notes=v; }
 
-  function render(){
-    renderTable();
-    renderTotals();
-  }
+  function render(){ renderTable(); renderTotals(); }
 
   function renderTable(){
     const tb = document.querySelector("#lines tbody");
@@ -619,8 +616,8 @@
         <td class="right"><input class="inlineInput" style="text-align:right" type="number" min="0" step="0.01" value="${fmt(ln.unit||0)}" oninput="window.__updateUnit(${i}, this.value)"></td>
         <td class="right"><input class="inlineInput" style="text-align:right" type="number" min="0" step="1" value="${ln.qty}" oninput="window.__updateQty(${i}, this.value)"></td>
         <td class="right">${fmt(lineTotal)}</td>
-        <td><input class="inlineInput" value="${escapeAttr(ln.notes||"")}" placeholder="Optional" oninput="window.__updateNotes(${i}, this.value)"></td>
-        <td class="right"><button class="btn secondary" style="padding:8px 10px" onclick="window.__removeLine(${i})">Remove</button></td>
+        <td><input class="inlineInput" value="${escapeAttr(ln.notes||"")}" placeholder="Optional / 可填" oninput="window.__updateNotes(${i}, this.value)"></td>
+        <td class="right"><button class="btn secondary" style="padding:8px 10px" onclick="window.__removeLine(${i})">Remove 删除</button></td>
       `;
       tb.appendChild(tr);
     });
@@ -628,7 +625,6 @@
 
   function calcTotals(){
     const subtotal = state.lines.reduce((s,ln)=>s+(ln.unit||0)*(ln.qty||0),0);
-
     const discountPct = Math.max(0, Math.min(100, Number($("discountPct").value || 0)));
     const discountAmt = Math.max(0, Number($("discountAmt").value || 0));
     const addon = Math.max(0, Number($("addon").value || 0));
@@ -638,10 +634,8 @@
     const afterAllDiscounts = Math.max(0, afterPct - discountAmt);
 
     const netBeforeGst = afterAllDiscounts + addon;
-
     const gstRate = getGstRatePct();
     const gstValue = netBeforeGst * gstRate / 100;
-
     const grand = Math.max(0, netBeforeGst + gstValue);
 
     return { subtotal, discountPct, discountAmt, pctDiscountValue, addon, gstRate, gstValue, grand };
@@ -659,10 +653,10 @@
     const t=calcTotals();
     const rows=[];
     rows.push(["SKY Electrical","WhatsApp: 8778 3810","","",""]);
-    rows.push(["Client / Project", $("client").value || "", "", "Invoice No.", $("invNo").value || ""]);
-    rows.push(["Invoice Date", $("invDate").value || "", "", "Prepared By", $("preparedBy").value || ""]);
+    rows.push(["Client / Project 客户/项目", $("client").value || "", "", "Invoice No. 编号", $("invNo").value || ""]);
+    rows.push(["Invoice Date 日期", $("invDate").value || "", "", "Prepared By 制作人", $("preparedBy").value || ""]);
     rows.push(["","","","",""]);
-    rows.push(["Description","Unit Price (S$)","Qty","Line Total (S$)","Notes"]);
+    rows.push(["Description 项目","Unit Price (S$) 单价","Qty 数量","Line Total (S$) 小计","Notes 备注"]);
 
     state.lines.forEach(ln=>{
       const lineTotal=(ln.unit||0)*(ln.qty||0);
@@ -670,26 +664,26 @@
     });
 
     rows.push(["","","","",""]);
-    rows.push(["Subtotal","","","S$ "+fmt(t.subtotal),""]);
-    if (t.discountPct) rows.push([`Discount (${fmt(t.discountPct)}%)`,"","","-S$ "+fmt(t.pctDiscountValue),""]);
-    if (t.discountAmt) rows.push(["Discount (S$)","","","-S$ "+fmt(t.discountAmt),""]);
-    if (t.addon) rows.push(["Additional Charges","","","S$ "+fmt(t.addon),""]);
-    if (t.gstRate>0) rows.push([`GST (${fmt(t.gstRate)}%)`,"","","S$ "+fmt(t.gstValue),""]);
-    rows.push(["Grand Total","","","S$ "+fmt(t.grand),""]);
+    rows.push(["Subtotal 小计","","","S$ "+fmt(t.subtotal),""]);
+    if (t.discountPct) rows.push([`Discount (${fmt(t.discountPct)}%) 折扣`,"","","-S$ "+fmt(t.pctDiscountValue),""]);
+    if (t.discountAmt) rows.push(["Discount (S$) 折扣金额","","","-S$ "+fmt(t.discountAmt),""]);
+    if (t.addon) rows.push(["Additional Charges 额外费用","","","S$ "+fmt(t.addon),""]);
+    if (t.gstRate>0) rows.push([`GST (${fmt(t.gstRate)}%) 税额`,"","","S$ "+fmt(t.gstValue),""]);
+    rows.push(["Grand Total 总计","","","S$ "+fmt(t.grand),""]);
 
     $("excelOut").value = rows.map(r=>r.map(c=>String(c).replace(/\t/g," ")).join("\t")).join("\n");
   }
 
   async function copyExcelText(){
     const text = $("excelOut").value.trim();
-    if (!text) return alert("Click Generate Excel Text first.");
+    if (!text) return alert("Click Generate first / 请先点击生成");
     try{
       await navigator.clipboard.writeText(text);
-      alert("Copied! Paste into Excel.");
+      alert("Copied! Paste into Excel / 已复制，可粘贴到Excel");
     }catch(e){
       $("excelOut").focus(); $("excelOut").select();
       document.execCommand("copy");
-      alert("Copied! Paste into Excel.");
+      alert("Copied! Paste into Excel / 已复制，可粘贴到Excel");
     }
   }
 
@@ -710,7 +704,7 @@
   }
 
   function clearAll(){
-    if(!confirm("Clear all lines?")) return;
+    if(!confirm("Clear all lines? / 确定清空吗？")) return;
     state.lines=[];
     $("discountPct").value=0;
     $("discountAmt").value=0;
